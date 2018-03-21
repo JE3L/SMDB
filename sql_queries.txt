@@ -1,0 +1,41 @@
+1. person who got more than one awards.
+select personname from (select personid,count(awardsname) as c from personawards group by personid having count(awardsname)>1) as a natural join person;
+
+2.list of particular person's quotes.
+select personname,quote from quotes natural join (select charid,personname from person natural join character) as a where personname='AL Pacino';
+
+3. movie that appers maximum time in watchlist.
+select title from (select title,count(title) as max from (select title from movie natural join watchlist) as a group by title) as d natural join (select max(cnt) as max from (select title,count(title) as cnt from (select title from movie natural join watchlist) as a group by title) as b) as c;
+
+4. name of movies for particular user in his/her city's theatre.
+select title,tname as theatrename,starttime,endtime from show natural join (select distinct title,tname,showid from movie natural join (select movieid,tname,showid from premier natural join (select distinct(theatreid),tname from "User" join theatre on "Location"=theatre.tlocation where uid=1) as a) as b)as c;
+
+5. list of writer,director whose movie BOcollection is more than x amount.
+select title,director,personname as writer from person join (select title,writerid,personname as director from person join (select title,writerid,directorid from movie where bocollection>100000000) as a on directorid=personid) as b on writerid=personid;
+
+6. list of movies having number of trivia exactly equal to 5.
+select title from movie natural join (select movieid,count(triviano) from trivia group by movieid having count(triviano)=5) as a;
+
+7. award winner movies having rating less than 5.
+select title,awardname,catagory,"Year",rating from movieawards natural join (select movieid,title,rating from movie where rating<5) as a;
+
+8. movies that got every category of awards.
+select title from movie natural join (select movieid,count(distinct catagory) from movieawards group by movieid having count(distinct catagory)=3) as a;
+
+9. movies that got every name of awards.
+select title from movie natural join (select movieid,count(distinct awardname) from movieawards group by movieid having count(distinct awardname)=3) as a;
+
+10. particular user's favourite genre.
+select genre from (select genre,count(genre) as max from movie natural join (select movieid from watchlist where userid=5) as d group by genre) as e natural join (select max(cnt) from (select genre,count(genre) as cnt from movie natural join (select movieid from watchlist where userid=5) as a group by genre) as b) as c;
+
+11. award winning actor's quotes and character description.
+select personname,"quote",chardescr from quotes natural join (select personname,charid,chardescr from person natural join (select personid,charid,chardescr from character natural join (select distinct(personid) from personawards where category='Best Act') as a) as b) as c;
+
+12. list of theatres running particular movie on particular date at particular location.
+select tname,starttime,endtime from show natural join (select showid,tname from theatre natural join (select theatreid,showid from premier where movieid=2 and date='2017-11-17') as a where tlocation='Ahmedabad')as b;
+
+13. person who is head of production house and had produced more than x different movies.
+select headid,count(movieid) as number_of_movies from (select distinct headid,movieid from productionhouse join produced on  pname=name) as a group by headid having count(movieid)>=8;
+
+14. list of person who can do more than one thing(like acter & writer).
+select personname from person natural join (select personid from (select distinct writerid as personid from movie) as a natural join (select distinct personid from "character" natural join movie) as b) as c;
