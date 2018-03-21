@@ -1,5 +1,5 @@
 # SMDB
-It is small movie database. A smaller version of IMDB.  
+It is small movie database. A smaller version of IMDB. If you want to run than first run .sql file in postgres tool than you can check query one by one and there one file .pgc is for console application that is just to run your query in Console Application.
 
 Project Title: SMDB = Small Movie Database
 
